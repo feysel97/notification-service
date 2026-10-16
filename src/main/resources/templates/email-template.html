@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { background-color: #ffffff; padding: 30px; border-radius: 8px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-bottom: 20px; color: #333; }
+        .footer { margin-top: 30px; font-size: 12px; color: #777; text-align: center; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2 th:text="${subject}">Notification Subject</h2>
+    </div>
+
+    <!-- We use utext so any HTML links we pass don't get escaped -->
+    <div style="font-size: 16px; color: #555; line-height: 1.6;" th:utext="${message}">
+        Notification message goes here...
+    </div>
+
+    <div class="footer">
+        <p>This is an automated message from our microservices platform. Please do not reply.</p>
+    </div>
+</div>
+</body>
+</html>
