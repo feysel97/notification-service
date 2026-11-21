@@ -3,6 +3,7 @@ package com.microservice.notification_service.messaging;
 import com.microservice.notification_service.dto.NotificationRequest;
 import com.microservice.notification_service.event.NotificationEvent;
 import com.microservice.notification_service.service.NotificationService;
+import com.microservice.notification_service.service.SseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -14,9 +15,15 @@ import org.springframework.stereotype.Component;
 public class NotificationEventListener {
 
     private final NotificationService notificationService;
+    private final SseService sseService;
 
     @RabbitListener(queues = "${app.rabbitmq.notification-queue}")
     public void handleNotificationEvent(NotificationEvent event) {
+        // 1. Add this guard clause to prevent NullPointerExceptions
+        if (event == null || event.eventType() == null) {
+            log.warn("Received unrecognized event format (missing eventType). Discarding safely.");
+            return; // Returning safely tells RabbitMQ to acknowledge and remove the message
+        }
         log.info("Received {} event from RabbitMQ for email: {}", event.eventType(), event.email());
 
         String displayName = (event.username() != null && !event.username().isBlank())

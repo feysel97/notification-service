@@ -19,6 +19,8 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final NotificationProcessor notificationProcessor;
+    // 1. Inject the new SseService
+    private final SseService sseService;
 
     @Transactional
     public NotificationResponse createNotification(NotificationRequest request) {
@@ -30,14 +32,15 @@ public class NotificationService {
                 .status(NotificationStatus.PENDING)
                 .build();
 
-        // 1. Save to database as PENDING
         Notification saved = notificationRepository.save(notification);
-
-        // 2. Fire and forget (returns void, runs on background thread)
         notificationProcessor.processAndSend(saved);
 
-        // 3. Return the PENDING response instantly without waiting
-        return mapToResponse(saved);
+        NotificationResponse response = mapToResponse(saved);
+
+        // 2. Fire the real-time event to Flutter!
+        sseService.emitNotification(request.recipientEmail(), response);
+
+        return response;
     }
 
     @Transactional(readOnly = true)

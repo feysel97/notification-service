@@ -12,6 +12,7 @@ This service operates completely decoupled from the rest of the system. It liste
 * **HTML Templating:** Uses Thymeleaf to inject dynamic variables (like reset links and user names) into branded, professional HTML email layouts.
 * **Header-Based Security:** Fully offloads JWT validation to the API Gateway. Endpoints are secured by checking `X-User-Email` and `X-User-Roles` headers injected by the Gateway.
 * **Mailtrap Integration:** Configured for safe local development using Mailtrap to prevent ISP SMTP blocking on ports 465/587.
+* **Real-Time SSE Streaming:** Pushes live notifications directly to connected Flutter clients via Server-Sent Events (`/api/v1/notifications/sse/stream`).
 
 ## 🛠️ Tech Stack
 
